@@ -53,11 +53,26 @@ const openBtn=document.getElementById('openBtn');
 let spotifyController=null;
 let openedByUser=false;
 
+const CHORUS_START = 48; // 0:48, punto de inicio solicitado
+
 function startSpotify(){
   if(!spotifyController) return false;
   try {
-    const result=spotifyController.play();
-    if(result && result.catch) result.catch(()=>{});
+    // Carga nuevamente la canción en 0:48 y luego inicia la reproducción.
+    spotifyController.loadEntity(
+      'spotify:track:6hpuesKPNa3WhV48O7Fa47',
+      false,
+      CHORUS_START
+    );
+
+    // Damos un instante al Embed para aplicar el punto inicial antes de play().
+    setTimeout(()=>{
+      try {
+        const result = spotifyController.play();
+        if(result && result.catch) result.catch(()=>{});
+      } catch(e) {}
+    }, 300);
+
     return true;
   } catch(e) { return false; }
 }
